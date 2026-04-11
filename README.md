@@ -1,7 +1,7 @@
-# 🎓 Mansoura Institute – Student Information System (SIS)
+# 🎓 Future Platform – Student Information System (SIS)
 
 ## 📌 Overview
-This project is a **Student Information System (SIS)** designed for the Higher Institute of Computers and Information Technology in Mansoura.
+This project is a **Student Information System (SIS)** designed for the Future Platform.
 
 The system aims to digitize academic operations including:
 - Student data management  
