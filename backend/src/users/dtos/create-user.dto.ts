@@ -1,0 +1,40 @@
+import { IsEmail, IsEnum, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
+import { Role } from "utils/enum";
+
+export class CreateUserDto {
+    @IsEmail()
+    @MaxLength(150)
+    @IsNotEmpty()
+    email: string;
+
+    @MinLength(3)
+    @IsNotEmpty()
+    full_name: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @MinLength(6)
+    password: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @MinLength(14)
+    @MaxLength(14)
+    national_id: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @MinLength(11)
+    @MaxLength(11)
+    phone: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @MinLength(3)
+    address: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @IsEnum(Role)
+    role: Role;
+}
