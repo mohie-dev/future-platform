@@ -30,16 +30,29 @@ export class AuthGuard implements CanActivate {
           }
         )
 
-        request['user'] = payload
+        request['user'] = payload;
 
+        // Block access if password is not set (except for the set-password endpoint)
+        if (payload.is_password_set === false) {
+          const isSetPasswordRoute = request.url.includes(
+            '/api/users/auth/set-password',
+          );
+          if (!isSetPasswordRoute) {
+            throw new UnauthorizedException(
+              'Access denied. Please set your password first.',
+            );
+          }
+        }
       } catch (err) {
-        throw new UnauthorizedException("Access denied, Invalid Token")
+        if (err instanceof UnauthorizedException) {
+          throw err;
+        }
+        throw new UnauthorizedException('Access denied, Invalid Token');
       }
-
     } else {
-      throw new UnauthorizedException("Access denied, No Token Provided")
+      throw new UnauthorizedException('Access denied, No Token Provided');
     }
 
-    return true
+    return true;
   }
 }

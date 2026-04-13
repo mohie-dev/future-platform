@@ -32,8 +32,11 @@ export class User {
   @Column({ type: 'enum', enum: Role, nullable: false, default: Role.STUDENT })
   role: Role;
 
-  @Column({ type: 'varchar', length: '150', nullable: false })
-  password_hash: string;
+  @Column({ type: 'varchar', length: '150', nullable: true })
+  password_hash: string | null;
+
+  @Column({ type: 'boolean', default: false })
+  is_password_set: boolean;
 
   @Column({ type: 'varchar', length: '150', nullable: false })
   national_id: string;

@@ -35,12 +35,16 @@ export class UsersService {
       throw new BadRequestException('National ID already in use');
     }
 
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    let hashedPassword = null;
+    if (password) {
+      const saltRounds = 10;
+      hashedPassword = await bcrypt.hash(password, saltRounds);
+    }
 
     const user = this.usersRepository.create({
       email,
       password_hash: hashedPassword,
+      is_password_set: !!password,
       full_name,
       national_id,
       phone,
@@ -119,12 +123,17 @@ export class UsersService {
 
     const { password, ...rest } = createUserDto;
 
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    let hashedPassword = null;
+
+    if (password) {
+      const saltRounds = 10;
+      hashedPassword = await bcrypt.hash(password, saltRounds);
+    }
 
     const newUser = this.usersRepository.create({
       ...rest,
       password_hash: hashedPassword,
+      is_password_set: !!password,
     });
 
     return this.usersRepository.save(newUser);
@@ -135,13 +144,16 @@ export class UsersService {
    * @param id
    * @returns void
    */
-  public async deleteUser(id: string, userId: string): Promise<{message: string}> {
+  public async deleteUser(
+    id: string,
+    userId: string,
+  ): Promise<{ message: string }> {
     await this.checkValidation(userId, Role.ADMIN);
     const user = await this.findById(id);
     await this.usersRepository.remove(user);
     return {
       message: 'User deleted successfully',
-    }
+    };
   }
 
   /**
@@ -156,15 +168,44 @@ export class UsersService {
     userId: string,
   ): Promise<User> {
     await this.checkValidation(userId, Role.ADMIN);
+
     const user = await this.findById(id);
-    if (updateUserDto.password) {
+
+    const { password, ...rest } = updateUserDto;
+
+    let password_hash = user.password_hash;
+    let is_password_set = user.is_password_set;
+
+    // handle password update safely
+    if (password) {
       const saltRounds = 10;
-      updateUserDto.password = await bcrypt.hash(
-        updateUserDto.password,
-        saltRounds,
-      );
+      password_hash = await bcrypt.hash(password, saltRounds);
+      is_password_set = true;
     }
-    const updatedUser = await this.usersRepository.merge(user, updateUserDto);
+
+    const updatedUser = this.usersRepository.merge(user, {
+      ...rest,
+      password_hash,
+      is_password_set,
+    });
+
     return this.usersRepository.save(updatedUser);
+  }
+
+  /**
+   * Update user password
+   * @param id
+   * @param password
+   * @returns User object
+   */
+  public async updatePassword(id: string, password: string): Promise<User> {
+    const user = await this.findById(id);
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    user.password_hash = hashedPassword;
+    user.is_password_set = true;
+
+    return this.usersRepository.save(user);
   }
 }

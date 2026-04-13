@@ -20,6 +20,8 @@ import { AuthRolesGuard } from './guards/auth-role.guard';
 import { Roles } from './decorators/user-role.decorator';
 import { Role } from 'utils/enum';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { InitLoginDto } from './dtos/init-login.dto';
+import { SetPasswordDto } from './dtos/set-password.dto';
 
 @Controller('api/users')
 export class UsersController {
@@ -40,6 +42,22 @@ export class UsersController {
   @Post('auth/login')
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
+  }
+
+  // POST: ~/api/users/auth/init-login
+  @Post('auth/init-login')
+  initLogin(@Body() initLoginDto: InitLoginDto) {
+    return this.authService.initLogin(initLoginDto);
+  }
+
+  // POST: ~/api/users/auth/set-password
+  @Post('auth/set-password')
+  @UseGuards(AuthGuard)
+  setPassword(
+    @Body() setPasswordDto: SetPasswordDto,
+    @CurrentUser() user: type.JWTPayloadType,
+  ) {
+    return this.authService.setPassword(user.sub, setPasswordDto);
   }
 
   // GET: ~/api/users/me
