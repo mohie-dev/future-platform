@@ -32,7 +32,7 @@ export class UsersController {
 
   // POST: ~/api/users/auth/register
   @Post('auth/register')
-  @UseGuards(AuthGuard, AuthRolesGuard)
+  @UseGuards(AuthRolesGuard)
   @Roles(Role.ADMIN)
   register(@Body() createUserDto: CreateUserDto) {
     return this.authService.register(createUserDto);

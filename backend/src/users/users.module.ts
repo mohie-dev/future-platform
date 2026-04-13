@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
@@ -26,6 +26,6 @@ import { AuthGuard } from './guards/auth.guard';
   ],
   providers: [UsersService, AuthService, AuthGuard],
   controllers: [UsersController],
-  exports: [UsersService, TypeOrmModule, JwtModule],
+  exports: [UsersService, TypeOrmModule, JwtModule, AuthGuard, AuthService],
 })
 export class UsersModule {}

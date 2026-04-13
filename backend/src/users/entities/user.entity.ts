@@ -5,7 +5,7 @@ import {
   UpdateDateColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { Role, Status } from 'utils/enum';
+import { Role, Status, Gender } from 'utils/enum';
 
 @Entity({ name: 'users' })
 export class User {
@@ -28,6 +28,9 @@ export class User {
     default: 'Mansoura',
   })
   address: string;
+
+  @Column({ type: 'enum', enum: Gender, nullable: false })
+  gender: Gender;
 
   @Column({ type: 'enum', enum: Role, nullable: false, default: Role.STUDENT })
   role: Role;
