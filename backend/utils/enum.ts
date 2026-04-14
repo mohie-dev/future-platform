@@ -17,6 +17,7 @@ export enum Gender {
 export enum HighSchoolType {
     SCIENCE_SECTION = 'science_section',
     MATHEMATICS_SECTION = 'mathematics_section',
+    GENERAL_SECTION = 'general_section',
 }
 
 export enum Department {
