@@ -8,11 +8,13 @@ import { typeOrmConfig } from './config/database.config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { StudentsModule } from './students/students.module';
+import { InstructorModule } from './instructors/instructor.module';
 
 @Module({
   imports: [
     UsersModule,
     StudentsModule,
+    InstructorModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

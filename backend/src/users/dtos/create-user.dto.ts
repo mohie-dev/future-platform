@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsDateString, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 import { Gender, Role } from "utils/enum";
 
 export class CreateUserDto {
@@ -21,6 +21,10 @@ export class CreateUserDto {
     @MinLength(14)
     @MaxLength(14)
     national_id: string;
+
+    @IsDateString()
+    @IsOptional()
+    date_of_birth: string;
 
     @IsNotEmpty()
     @IsString()

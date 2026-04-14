@@ -43,6 +43,10 @@ export class CreateStudentDto {
   @IsNotEmpty()
   gpa: number;
 
+  @IsNumber()
+  @IsNotEmpty()
+  cgpa: number;
+
   @IsDateString()
   @IsOptional()
   enrollment_date: string;

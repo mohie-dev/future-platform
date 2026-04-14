@@ -44,6 +44,9 @@ export class User {
   @Column({ type: 'varchar', length: '150', nullable: false })
   national_id: string;
 
+  @Column({ type: 'date', nullable: true })
+  date_of_birth: Date;
+
   @Column({
     type: 'enum',
     enum: Status,

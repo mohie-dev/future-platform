@@ -52,6 +52,8 @@ export class StudentsService {
         role: Role.STUDENT,
         password_hash: null,
         is_password_set: false,
+        date_of_birth: new Date(user.date_of_birth),
+        gender: user.gender,
       });
 
       const savedUser = await manager.save(newUser);

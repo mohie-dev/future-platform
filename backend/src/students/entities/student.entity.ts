@@ -44,6 +44,9 @@ export class Student {
   @Column({ type: 'float', default: 0 })
   gpa: number;
 
+  @Column({ type: 'float', default: 0 })
+  cgpa: number;
+
   @Column({ type: 'date' })
   enrollment_date: Date;
 
