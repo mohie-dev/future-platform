@@ -2,6 +2,7 @@ import { Entity, Column, OneToOne, JoinColumn, PrimaryColumn, OneToMany, ManyToM
 import { User } from '../../users/entities/user.entity';
 import { Department, InstructorDegree, InstructorRank } from 'utils/enum';
 import { Course } from 'src/courses/entities/course.entity';
+import { InstructorCourse } from 'src/assign-course/entities/assign-course.entity';
 
 @Entity({ name: 'instructors' })
 export class Instructor {
@@ -23,7 +24,7 @@ export class Instructor {
   })
   instructor_rank: InstructorRank;
 
-  @Column({ type: 'enum', enum: InstructorDegree,nullable: true })
+  @Column({ type: 'enum', enum: InstructorDegree, nullable: true })
   instructor_degree: InstructorDegree;
 
   @Column({
@@ -33,6 +34,9 @@ export class Instructor {
     default: Department.CS,
   })
   department: Department;
+
+  @OneToMany(() => InstructorCourse, (ic) => ic.instructor)
+  assignments: InstructorCourse[];
 
   @Column({ nullable: true })
   notes: string;

@@ -10,6 +10,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { StudentsModule } from './students/students.module';
 import { InstructorModule } from './instructors/instructor.module';
 import { CoursesModule } from './courses/courses.module';
+import { AssignCourseModule } from './assign-course/assign.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CoursesModule } from './courses/courses.module';
     StudentsModule,
     InstructorModule,
     CoursesModule,
+    AssignCourseModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
