@@ -1,6 +1,7 @@
-import { Entity, Column, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
+import { Entity, Column, OneToOne, JoinColumn, PrimaryColumn, OneToMany, ManyToMany } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { Department } from 'utils/enum';
+import { Department, InstructorDegree, InstructorRank } from 'utils/enum';
+import { Course } from 'src/courses/entities/course.entity';
 
 @Entity({ name: 'instructors' })
 export class Instructor {
@@ -13,6 +14,17 @@ export class Instructor {
 
   @Column({ unique: true })
   instructor_code: string;
+
+  @Column({
+    type: 'enum',
+    enum: InstructorRank,
+    nullable: true,
+    default: InstructorRank.LECTURER,
+  })
+  instructor_rank: InstructorRank;
+
+  @Column({ type: 'enum', enum: InstructorDegree,nullable: true })
+  instructor_degree: InstructorDegree;
 
   @Column({
     type: 'enum',

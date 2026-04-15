@@ -9,12 +9,14 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { StudentsModule } from './students/students.module';
 import { InstructorModule } from './instructors/instructor.module';
+import { CoursesModule } from './courses/courses.module';
 
 @Module({
   imports: [
     UsersModule,
     StudentsModule,
     InstructorModule,
+    CoursesModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

@@ -60,3 +60,17 @@ export enum Grade {
     D_MINUS = 'D-',
     F = 'F',
 }
+
+export enum InstructorRank {
+    PROFESSOR = 'professor',
+    ASSOCIATE_PROFESSOR = 'associate_professor',
+    ASSISTANT_PROFESSOR = 'assistant_professor',
+    LECTURER = 'lecturer',
+    INSTRUCTOR = 'instructor',
+}
+
+export enum InstructorDegree {
+    PHD = 'phd',
+    MASTERS = 'masters',
+    BACHELOR = 'bachelor',
+}

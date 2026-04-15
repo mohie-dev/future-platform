@@ -77,4 +77,14 @@ export class InstructorService {
             };
         });
     }
+
+    public async getInstructorById(id: string) {
+        const instructor = await this.instructorRepository.findOne({
+            where: { id },
+        });
+        if (!instructor) {
+            throw new NotFoundException('Instructor not found');
+        }
+        return instructor;
+    }
 }
