@@ -38,7 +38,7 @@ export class CreateUserDto {
     address: string;
 
     @IsEnum(Role)
-    @IsNotEmpty()
+    @IsOptional()
     role: Role;
 
     @IsEnum(Gender)

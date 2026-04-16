@@ -66,4 +66,8 @@ export class CreateStudentDto {
   @IsNumber()
   @IsNotEmpty()
   high_school_year: number;
+
+  @IsString()
+  @IsOptional()
+  notes: string;
 }

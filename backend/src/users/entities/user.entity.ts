@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -35,6 +36,7 @@ export class User {
   @Column({ type: 'enum', enum: Role, nullable: false, default: Role.STUDENT })
   role: Role;
 
+  @Exclude()
   @Column({ type: 'varchar', length: '150', nullable: true })
   password_hash: string | null;
 
