@@ -6,11 +6,18 @@ import { UsersModule } from "src/users/users.module";
 import { StudentsService } from "./students.service";
 import { Student } from "./entities/student.entity";
 import { StudentsController } from "./students.controller";
+import { forwardRef } from "@nestjs/common";
+import { EnrollmentsModule } from "src/enrollments/enrollments.module";
 
 @Module({
-    imports: [UsersModule, JwtModule, TypeOrmModule.forFeature([User, Student])],
+    imports: [
+        UsersModule,
+        JwtModule,
+        forwardRef(() => EnrollmentsModule),
+        TypeOrmModule.forFeature([User, Student])
+    ],
     providers: [StudentsService],
     controllers: [StudentsController],
     exports: [StudentsService, TypeOrmModule],
 })
-export class StudentsModule {}
+export class StudentsModule { }

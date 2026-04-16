@@ -11,6 +11,7 @@ import { StudentsModule } from './students/students.module';
 import { InstructorModule } from './instructors/instructor.module';
 import { CoursesModule } from './courses/courses.module';
 import { AssignCourseModule } from './assign-course/assign.module';
+import { EnrollmentsModule } from './enrollments/enrollments.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AssignCourseModule } from './assign-course/assign.module';
     InstructorModule,
     CoursesModule,
     AssignCourseModule,
+    EnrollmentsModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

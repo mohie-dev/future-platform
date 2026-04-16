@@ -9,6 +9,14 @@ export enum Status {
     INACTIVE = 'inactive',
 }
 
+export enum EnrollmentStatus {
+    PENDING = 'pending',
+    IN_PROGRESS = 'in_progress',
+    FINISHED = 'finished',
+    DROPPED = 'dropped',
+    FAILED = 'failed',
+}
+
 export enum Gender {
     MALE = 'male',
     FEMALE = 'female',

@@ -1,5 +1,5 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { Department, CreditHours, Semester } from "utils/enum";
+import { IsEnum, IsOptional, IsString, IsNumber } from "class-validator";
+import { Department, CreditHours, Semester, Level } from "utils/enum";
 
 export class UpdateCourseDto {
     @IsString()
@@ -26,7 +26,15 @@ export class UpdateCourseDto {
     @IsOptional()
     course_department: Department;
 
-    @IsString()
+    @IsEnum(Level)
     @IsOptional()
-    instructor_id: string;
+    course_level: Level;
+
+    @IsNumber()
+    @IsOptional()
+    course_min_credit_hours?: number;
+
+    @IsNumber()
+    @IsOptional()
+    course_min_gpa?: number;
 }

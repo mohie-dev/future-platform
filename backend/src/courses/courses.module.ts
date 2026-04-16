@@ -7,12 +7,14 @@ import { CoursesController } from "./courses.controller";
 import { CoursesService } from "./courses.service";
 import { CoursePrerequisite } from "./entities/course-prerequisite.entity";
 import { AssignCourseModule } from "src/assign-course/assign.module";
+import { EnrollmentsModule } from "src/enrollments/enrollments.module";
 
 @Module({
     imports: [
         UsersModule,
         JwtModule,
         forwardRef(() => AssignCourseModule),
+        forwardRef(() => EnrollmentsModule),
         TypeOrmModule.forFeature([Course, CoursePrerequisite]),
     ],
     controllers: [CoursesController],

@@ -26,7 +26,7 @@ export class CoursesService {
      * @param admin_id 
      * @returns {message: string, data: {course: Course}}
      */
-    public async createCourse(dto: CreateCourseDto, adminId: string) {
+    public async createCourse(dto: CreateCourseDto, adminId: string): Promise<{ message: string, data: { course: Course } }> {
         await this.usersService.checkValidation(adminId, Role.ADMIN);
 
         const existing = await this.courseRepository.findOne({
@@ -45,9 +45,16 @@ export class CoursesService {
             level: dto.course_level,
             semester: dto.course_semester,
             department: dto.course_department,
+            min_credit_hours: dto.course_min_credit_hours,
+            min_gpa: dto.course_min_gpa,
         });
 
-        return await this.courseRepository.save(course);
+        return {
+            message: 'Course created successfully',
+            data: {
+                course: await this.courseRepository.save(course),
+            },
+        };
     }
 
     /**

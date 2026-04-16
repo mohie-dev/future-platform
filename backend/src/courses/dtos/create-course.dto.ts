@@ -30,7 +30,11 @@ export class CreateCourseDto {
     @IsNotEmpty()
     course_level: Level;
 
-    @IsString()
+    @IsNumber()
     @IsOptional()
-    prerequisite_course_ids: string[];
+    course_min_credit_hours?: number;
+
+    @IsNumber()
+    @IsOptional()
+    course_min_gpa?: number;
 }

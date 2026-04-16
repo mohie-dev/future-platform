@@ -4,8 +4,10 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
 } from 'typeorm';
-import { Department, Semester } from 'utils/enum';
+import { Department, CreditHours, Semester, Level } from 'utils/enum';
 import { CoursePrerequisite } from './course-prerequisite.entity';
+import { Enrollment } from 'src/enrollments/entities/enrollment.entity';
+import { InstructorCourse } from 'src/assign-course/entities/assign-course.entity';
 
 @Entity('courses')
 export class Course {
@@ -21,19 +23,24 @@ export class Course {
   @Column({ nullable: true })
   course_description: string;
 
-  @Column({ type: 'int' })
-  credit_hours: number; // 2 | 3 | 4
+  @Column({ type: 'enum', enum: CreditHours, default: CreditHours.THREE })
+  credit_hours: CreditHours; // 2 | 3 | 4
 
-  @Column({ type: 'int' })
-  level: number; // 1 → 4
+  @Column({ type: 'enum', enum: Level, default: Level.FIRST })
+  level: Level; // 1 → 4
 
-  @Column({ type: 'enum', enum: Semester })
+  @Column({ type: 'enum', enum: Semester, default: Semester.FIRST })
   semester: Semester;
 
-  @Column({ type: 'enum', enum: Department })
+  @Column({ type: 'enum', enum: Department, default: Department.CS })
   department: Department;
 
-  // 🔥 relation with prerequisites
+  @Column({ type: 'int', default: 0, nullable: true })
+  min_credit_hours: number;
+
+  @Column({ type: 'float', default: 0, nullable: true })
+  min_gpa: number;
+
   @OneToMany(
     () => CoursePrerequisite,
     (prerequisite) => prerequisite.course,
@@ -45,4 +52,10 @@ export class Course {
     (prerequisite) => prerequisite.prerequisite,
   )
   is_prerequisite_for: CoursePrerequisite[];
+
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.course)
+  enrollments: Enrollment[];
+
+  @OneToMany(() => InstructorCourse, (assignment) => assignment.course)
+  assignments: InstructorCourse[];
 }
