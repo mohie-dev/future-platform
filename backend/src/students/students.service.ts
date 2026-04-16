@@ -154,4 +154,25 @@ export class StudentsService {
     const student = await this.getStudentById(student_id);
     return student.enrollments.filter((enrollment) => enrollment.status === EnrollmentStatus.FINISHED).map((enrollment) => enrollment.course);
   }
+
+
+  /**
+   * Get student courses by status
+   * @param student_id
+   * @param course_status
+   * @returns
+   */
+  public async getStudentCourses(student_id: string, course_status?: EnrollmentStatus) {
+    const student = await this.getStudentById(student_id);
+    const enrollments = student.enrollments
+      .filter((enrollment) => course_status && enrollment.status === course_status)
+      .map((enrollment) => enrollment.course);
+
+    return {
+      message: 'Student courses fetched successfully',
+      data: {
+        enrollments,
+      },
+    };
+  }
 }
