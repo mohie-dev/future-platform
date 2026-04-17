@@ -21,9 +21,10 @@ The system aims to digitize academic operations including:
 - Instructor Dashboard (Courses & grading)
 - Admin Dashboard (Student management & operations)
 - GPA Calculation Engine
+- Course Registration (Enrollment System)
+- Instructor Course Assignment
 
 ### Out of Scope (Future Phases)
-- Course Registration (Enrollment System)
 - E-Learning (Videos, Assignments, Quizzes)
 - Payment / Financial Systems
 - Mobile Application
@@ -44,12 +45,6 @@ The system aims to digitize academic operations including:
 ---
 
 ## Documentation
-
-### ER Diagram
-
-![ER Diagram](/docs/platform-db-test.png)
-
-### API Documentation
 
 - [Business Logic](/docs/BA_document.pdf)
 - [User Stories](/docs//USs_document.pdf)
