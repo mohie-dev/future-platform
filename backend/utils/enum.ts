@@ -7,14 +7,17 @@ export enum Role {
 export enum Status {
     ACTIVE = 'active',
     INACTIVE = 'inactive',
+    SUSPENDED = 'suspended',
 }
 
 export enum EnrollmentStatus {
-    PENDING = 'pending',
-    IN_PROGRESS = 'in_progress',
-    FINISHED = 'finished',
-    DROPPED = 'dropped',
-    FAILED = 'failed',
+    IN_PROGRESS = 'in_progress',  
+    PASSED = 'passed',            
+    FAILED = 'failed',            
+    FAILED_ABSENT = 'failed_absent', 
+    WITHDRAWN = 'withdrawn',      
+    INCOMPLETE = 'incomplete',    
+    DROPPED = 'dropped',          
 }
 
 export enum Gender {
@@ -67,6 +70,9 @@ export enum Grade {
     D = 'D',
     D_MINUS = 'D-',
     F = 'F',
+    FX = 'FX',   // رسوب بالغياب
+    IC = 'IC',   // Incomplete
+    W = 'W', 
 }
 
 export enum InstructorRank {
