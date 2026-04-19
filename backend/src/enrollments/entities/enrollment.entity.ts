@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { Student } from 'src/students/entities/student.entity';
 import { Course } from 'src/courses/entities/course.entity';
-import { EnrollmentStatus, Semester } from 'utils/enum';
+import { EnrollmentStatus, Grade, Semester } from 'utils/enum';
 
 @Entity('enrollments')
 @Unique(['student', 'course', 'year', 'semester'])
@@ -44,7 +44,10 @@ export class Enrollment {
   status: EnrollmentStatus;
 
   @Column({ type: 'float', nullable: true })
-  grade: number | null;
+  grade_number: number | null;
+
+  @Column({ type: 'enum', enum: Grade, nullable: true })
+  grade_letter: Grade;
 
   @CreateDateColumn()
   created_at: Date;
