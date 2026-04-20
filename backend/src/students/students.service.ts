@@ -152,7 +152,7 @@ export class StudentsService {
    */
   public async getStudentCompletedCourses(student_id: string) {
     const student = await this.getStudentById(student_id);
-    return student.enrollments.filter((enrollment) => enrollment.status === EnrollmentStatus.FINISHED).map((enrollment) => enrollment.course);
+    return student.enrollments.filter((enrollment) => enrollment.status === EnrollmentStatus.PASSED).map((enrollment) => enrollment.course);
   }
 
 
