@@ -23,7 +23,7 @@ export class CreateUserDto {
     national_id: string;
 
     @IsDateString()
-    @IsOptional()
+    @IsNotEmpty()
     date_of_birth: string;
 
     @IsNotEmpty()
