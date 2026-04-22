@@ -46,7 +46,7 @@ export class User {
   @Column({ type: 'varchar', length: '150', nullable: false })
   national_id: string;
 
-  @Column({ type: 'date', nullable: true })
+  @Column({ type: 'date', nullable: false })
   date_of_birth: Date;
 
   @Column({
