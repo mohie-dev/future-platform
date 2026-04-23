@@ -13,7 +13,7 @@ export class CreateEnrollmentDto {
     @IsNumber()
     @IsNotEmpty()
     year: number;
-    
+
     @IsEnum(Semester)
     @IsNotEmpty()
     semester: Semester;

@@ -34,8 +34,8 @@ export class EnrollmentService {
         const completedCourses = await this.studentService.getStudentCompletedCourses(studentId);
 
         // check if student has met the minimum credit hours requirement
-        if (course.data.course.credit_hours <= student.completed_credit_hours) {
-            throw new BadRequestException('Student has not met the minimum credit hours requirement');
+        if (course.data.course.min_gpa <= student.gpa) {
+            throw new BadRequestException(`Student has not met the minimum gpa requirement. Required: ${course.data.course.min_gpa}, Found: ${student.gpa}`);
         }
 
         // check if student has met the prerequisite requirement

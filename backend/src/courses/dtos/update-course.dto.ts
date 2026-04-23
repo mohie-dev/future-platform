@@ -36,5 +36,5 @@ export class UpdateCourseDto {
 
     @IsNumber()
     @IsOptional()
-    course_min_gpa?: number;
+    min_gpa?: number;
 }
