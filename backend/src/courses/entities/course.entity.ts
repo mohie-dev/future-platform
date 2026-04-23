@@ -32,7 +32,7 @@ export class Course {
   @Column({ type: 'enum', enum: Semester, default: Semester.FIRST })
   semester: Semester;
 
-  @Column({ type: 'enum', enum: Department, default: Department.CS })
+  @Column({ type: 'enum', enum: Department, default: Department.GENERAL })
   department: Department;
 
   @Column({ type: 'int', default: 0, nullable: true })

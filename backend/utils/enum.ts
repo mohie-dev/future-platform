@@ -35,6 +35,7 @@ export enum Department {
     CS = 'cs',
     IS = 'is',
     IT = 'it',
+    GENERAL = 'general'
 }
 
 export enum Level {

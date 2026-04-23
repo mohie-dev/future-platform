@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
@@ -91,7 +91,18 @@ export class AuthService {
       throw new BadRequestException('Passwords do not match');
     }
 
-    const user = await this.usersService.updatePassword(userId, newPassword);
+    const user = await this.usersService.findById(userId);
+
+    if (user.is_password_set == true) {
+      throw new ForbiddenException(
+        'Password has already been set. Please login with your password.',
+      );
+    }
+
+    const updatedUser = await this.usersService.updatePassword(
+      userId,
+      newPassword,
+    );
 
     const payload: JWTPayloadType = {
       sub: user.id,

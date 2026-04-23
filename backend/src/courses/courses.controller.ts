@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Param, Get, Put } from "@nestjs/common";
+import { Controller, Post, Body, UseGuards, Param, Get, Put, Patch } from "@nestjs/common";
 import { CoursesService } from "./courses.service";
 import { CreateCourseDto } from "./dtos/create-course.dto";
 import { UpdateCourseDto } from "./dtos/update-course.dto";
@@ -17,7 +17,10 @@ export class CoursesController {
     @Post()
     @UseGuards(AuthRolesGuard)
     @Roles(Role.ADMIN)
-    create(@Body() createCourseDto: CreateCourseDto, @CurrentUser() user: type.JWTPayloadType) {
+    create(
+        @Body() createCourseDto: CreateCourseDto,
+        @CurrentUser() user: type.JWTPayloadType
+    ) {
         return this.coursesService.createCourse(createCourseDto, user.sub);
     }
 
@@ -25,7 +28,11 @@ export class CoursesController {
     @Post(':course_id/prerequisite')
     @UseGuards(AuthRolesGuard)
     @Roles(Role.ADMIN)
-    addPrerequisite(@Param('course_id') course_id: string, @Body() prerequisiteId: AddPrerequisiteDto, @CurrentUser() user: type.JWTPayloadType) {
+    addPrerequisite(
+        @Param('course_id') course_id: string,
+        @Body() prerequisiteId: AddPrerequisiteDto,
+        @CurrentUser() user: type.JWTPayloadType
+    ) {
         return this.coursesService.addPrerequisite(course_id, prerequisiteId, user.sub);
     }
 
@@ -45,8 +52,8 @@ export class CoursesController {
         return this.coursesService.getCourse(course_id);
     }
 
-    // PUT: ~/api/courses/:course_id
-    @Put(':course_id')
+    // PATCH: ~/api/courses/:course_id
+    @Patch(':course_id')
     @UseGuards(AuthRolesGuard)
     @Roles(Role.ADMIN)
     async updateCourse(@Param('course_id') course_id: string, @Body() updateCourseDto: UpdateCourseDto, @CurrentUser() user: type.JWTPayloadType) {

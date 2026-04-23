@@ -8,6 +8,7 @@ import {
   Param,
   Put,
   Patch,
+  HttpCode,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -40,6 +41,7 @@ export class UsersController {
 
   // POST: ~/api/users/auth/login
   @Post('auth/login')
+  @HttpCode(200)
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }
