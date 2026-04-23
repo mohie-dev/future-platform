@@ -51,6 +51,8 @@ The system aims to digitize academic operations including:
 ### Frontend
 
 - React
+- Tailwind
+- Typescript
 
 ---
 
