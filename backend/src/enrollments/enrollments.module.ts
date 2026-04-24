@@ -7,12 +7,14 @@ import { JwtModule } from "@nestjs/jwt";
 import { EnrollmentService } from "./enrollments.service";
 import { EnrollmentController } from "./enrollments.controller";
 import { UsersModule } from "src/users/users.module";
+import { GradesModule } from "src/grades/grades.module";
 
 @Module({
     imports: [
         UsersModule,
         forwardRef(() => CoursesModule),
         forwardRef(() => StudentsModule),
+        forwardRef(() => GradesModule),
         TypeOrmModule.forFeature([Enrollment]),
         JwtModule,
     ],

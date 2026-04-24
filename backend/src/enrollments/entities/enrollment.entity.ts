@@ -7,10 +7,12 @@ import {
   UpdateDateColumn,
   CreateDateColumn,
   Index,
+  OneToOne,
 } from 'typeorm';
 import { Student } from 'src/students/entities/student.entity';
 import { Course } from 'src/courses/entities/course.entity';
-import { EnrollmentStatus, Grade, Semester } from 'utils/enum';
+import { EnrollmentStatus, Semester } from 'utils/enum';
+import { Grade } from 'src/grades/entities/grade.entity';
 
 @Entity('enrollments')
 @Unique(['student', 'course', 'year', 'semester'])
@@ -43,11 +45,8 @@ export class Enrollment {
   })
   status: EnrollmentStatus;
 
-  @Column({ type: 'float', nullable: true })
-  grade_number: number | null;
-
-  @Column({ type: 'enum', enum: Grade, nullable: true })
-  grade_letter: Grade;
+  @OneToOne(() => Grade, (grade) => grade.enrollment)
+  grade: Grade;
 
   @CreateDateColumn()
   created_at: Date;

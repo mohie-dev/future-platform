@@ -144,9 +144,9 @@ export class CoursesService {
     /**
      * Add prerequisite to a course
      * There are some courses need prerequisites to be taken before them, so we need to add prerequisites to them
-     * @param courseId 
-     * @param prerequisiteId 
-     * @param adminId 
+     * @param courseId The id of the course to add a prerequisite to
+     * @param prerequisiteId The id of the prerequisite course that need to be taken before the course
+     * @param adminId
      * @returns {message: string, data: {course: Course}}
      */
     public async addPrerequisite(

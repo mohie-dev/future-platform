@@ -110,7 +110,7 @@ export class EnrollmentService {
     public async getEnrollmentById(id: string) {
         const enrollment = await this.enrollmentRepository.findOne({
             where: { id },
-            relations: ['student', 'course'],
+            relations: ['student', 'course', 'grade'],
         });
 
         if (!enrollment) {
