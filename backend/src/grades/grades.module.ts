@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Grade } from './entities/grade.entity';
 import { GradesController } from './grades.controller';
@@ -6,11 +6,13 @@ import { GradesService } from './grades.service';
 import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { Enrollment } from 'src/enrollments/entities/enrollment.entity';
+import { StudentsModule } from 'src/students/students.module';
 
 @Module({
     imports: [
         UsersModule,
         JwtModule,
+        forwardRef(() => StudentsModule),
         TypeOrmModule.forFeature([Grade, Enrollment]),
     ],
     controllers: [GradesController],

@@ -7,6 +7,7 @@ import { CoursesService } from "src/courses/courses.service";
 import { StudentsService } from "src/students/students.service";
 import { CreateEnrollmentDto } from "./dtos/create-enrollment.dto";
 import { UsersService } from "src/users/users.service";
+import { GradesService } from "src/grades/grades.service";
 
 @Injectable()
 export class EnrollmentService {
@@ -16,6 +17,7 @@ export class EnrollmentService {
         private readonly studentService: StudentsService,
         private readonly courseService: CoursesService,
         private readonly usersService: UsersService,
+        private readonly gradesService: GradesService,
     ) { }
 
     /**
@@ -66,7 +68,7 @@ export class EnrollmentService {
             throw new BadRequestException('Student has not met the minimum gpa requirement');
         }
 
-        const enrollment = this.enrollmentRepository.create({
+        const savedEnrollment = await this.enrollmentRepository.create({
             student: student,
             course: course.data.course,
             year: year,
@@ -74,10 +76,17 @@ export class EnrollmentService {
             status: EnrollmentStatus.IN_PROGRESS,
         });
 
+        // create grade for the enrollment and set it to 0 for all
+        await this.gradesService.upsertGrade(savedEnrollment.id, {
+            coursework: 0,
+            midterm: 0,
+            final: 0,
+        });
+
         return {
             message: 'Enrollment created successfully',
             data: {
-                enrollment: await this.enrollmentRepository.save(enrollment),
+                enrollment: savedEnrollment,
             },
         };
     }

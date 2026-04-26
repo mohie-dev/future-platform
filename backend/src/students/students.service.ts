@@ -6,6 +6,7 @@ import { CreateStudentDto } from './dtos/create-student.dto';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entities/user.entity';
 import { Department, EnrollmentStatus, Gender, Level, Role } from 'utils/enum';
+import { UpdateStudentDto } from './dtos/update-student.dto';
 
 @Injectable()
 export class StudentsService {
@@ -174,5 +175,13 @@ export class StudentsService {
         enrollments,
       },
     };
+  }
+
+  public async updateStudent(id: string, dto: UpdateStudentDto) {
+    const student = await this.getStudentById(id);
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+    return await this.studentRepository.update(id, dto);
   }
 }

@@ -24,6 +24,9 @@ export class Grade {
     @Column({ type: 'float', default: 0 })
     total: number;
 
+    @Column({ type: 'float', default: 0 })
+    point: number;
+
     @Column({ type: 'enum', enum: GradeEnum, nullable: true })
     grade: GradeEnum;
 

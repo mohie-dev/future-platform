@@ -5,6 +5,7 @@ import { Grade as GradeEnum } from "../../utils/enum";
 import { Repository } from "typeorm";
 import { UpdateGradeDto } from "./dtos/update-grade.dto";
 import { Enrollment } from "src/enrollments/entities/enrollment.entity";
+import { StudentsService } from "src/students/students.service";
 
 @Injectable()
 export class GradesService {
@@ -13,6 +14,7 @@ export class GradesService {
         private gradeRepository: Repository<Grade>,
         @InjectRepository(Enrollment)
         private enrollmentRepository: Repository<Enrollment>,
+        private readonly studentService: StudentsService,
     ) { }
 
 
@@ -69,8 +71,48 @@ export class GradesService {
             (grade.midterm || 0) +
             (grade.final || 0);
 
+        // calculate letter
+        grade.grade = this.calculateLetter(grade.total);
+
+        // calculate point
+        grade.point = this.getGradePoint(grade.grade);
+
         return this.gradeRepository.save(grade);
     }
+
+    /**
+     * Calculate GPA for a student in a specific year and semester
+     * @param student_id - Student ID
+     * @param year - Year
+     * @param semester - Semester
+     * @returns GPA
+     */
+    public async calculateGPA(student_id: string, year: number, semester: number) {
+        const enrollments = await this.enrollmentRepository.find({
+            where: { student: { id: student_id }, year, semester },
+            relations: ['grade', 'course'],
+        });
+
+        let total_points = 0;
+        let total_credits = 0;
+
+        console.log("total enrollment: ", enrollments.length);
+
+        for (const enrollment of enrollments) {
+            if (enrollment.grade?.is_finalized) {
+                console.log("Finalized grade: ", enrollment.grade);
+                total_points += enrollment.grade.point * enrollment.course.credit_hours;
+                total_credits += enrollment.course.credit_hours;
+            }
+        }
+
+        const gpa = total_points / total_credits;
+
+        await this.studentService.updateStudent(student_id, { gpa });
+
+        return gpa;
+    }
+
 
     // Finalize grade check and save
     public async finalizeGrade(enrollmentId: string) {
@@ -110,6 +152,37 @@ export class GradesService {
         if (total >= 50) return GradeEnum.D_MINUS;
 
         return GradeEnum.F;
+    }
+
+    private getGradePoint(grade: GradeEnum): number {
+        switch (grade) {
+            case GradeEnum.A_PLUS:
+                return 4.0;
+            case GradeEnum.A:
+                return 3.75;
+            case GradeEnum.A_MINUS:
+                return 3.5;
+            case GradeEnum.B_PLUS:
+                return 3.25;
+            case GradeEnum.B:
+                return 3.0;
+            case GradeEnum.B_MINUS:
+                return 2.75;
+            case GradeEnum.C_PLUS:
+                return 2.5;
+            case GradeEnum.C:
+                return 2.25;
+            case GradeEnum.C_MINUS:
+                return 2.0;
+            case GradeEnum.D_PLUS:
+                return 1.75;
+            case GradeEnum.D:
+                return 1.5;
+            case GradeEnum.D_MINUS:
+                return 1.25;
+            default:
+                return 0.0;
+        }
     }
 
     /**
