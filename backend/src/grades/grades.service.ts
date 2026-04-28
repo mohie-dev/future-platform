@@ -1,11 +1,12 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Grade } from "./entities/grade.entity";
-import { Grade as GradeEnum } from "../../utils/enum";
+import { EnrollmentStatus, Grade as GradeEnum } from "../../utils/enum";
 import { Repository } from "typeorm";
 import { UpdateGradeDto } from "./dtos/update-grade.dto";
 import { Enrollment } from "src/enrollments/entities/enrollment.entity";
 import { StudentsService } from "src/students/students.service";
+import { EnrollmentService } from "src/enrollments/enrollments.service";
 
 @Injectable()
 export class GradesService {
@@ -15,6 +16,8 @@ export class GradesService {
         @InjectRepository(Enrollment)
         private enrollmentRepository: Repository<Enrollment>,
         private readonly studentService: StudentsService,
+        @Inject(forwardRef(() => EnrollmentService))
+        private readonly enrollmentsService: EnrollmentService,
     ) { }
 
 
@@ -49,6 +52,8 @@ export class GradesService {
                 coursework: 0,
                 midterm: 0,
                 final: 0,
+                total: 0,
+                is_finalized: false,
             });
         }
 
@@ -96,11 +101,8 @@ export class GradesService {
         let total_points = 0;
         let total_credits = 0;
 
-        console.log("total enrollment: ", enrollments.length);
-
         for (const enrollment of enrollments) {
             if (enrollment.grade?.is_finalized) {
-                console.log("Finalized grade: ", enrollment.grade);
                 total_points += enrollment.grade.point * enrollment.course.credit_hours;
                 total_credits += enrollment.course.credit_hours;
             }
@@ -113,11 +115,46 @@ export class GradesService {
         return gpa;
     }
 
+    /**
+     * calculate CGPA for a student
+     * @param studentId - Student ID
+     * @returns CGPA
+     */
+    public async calculateCGPA(studentId: string): Promise<number> {
+        const enrollments = await this.enrollmentRepository.find({
+            where: {
+                student: { id: studentId },
+            },
+            relations: ['course', 'grade'],
+        });
+
+        let totalQualityPoints = 0; // points * credit_hours
+        let totalCreditHours = 0;
+
+        for (const enr of enrollments) {
+            // skip invalid cases
+            if (!enr.grade) continue;
+            if (!enr.grade.is_finalized) continue;
+            if (enr.status === 'dropped') continue;
+
+            const points = enr.grade.point ?? 0;
+            const credits = enr.course.credit_hours ?? 0;
+
+            totalQualityPoints += points * credits;
+            totalCreditHours += credits;
+        }
+
+        if (totalCreditHours === 0) return 0;
+
+        return parseFloat((totalQualityPoints / totalCreditHours).toFixed(2));
+    }
+
 
     // Finalize grade check and save
     public async finalizeGrade(enrollmentId: string) {
         const grade = await this.gradeRepository.findOne({
             where: { enrollment: { id: enrollmentId } },
+            relations: ['enrollment'],
         });
 
         if (!grade) {
@@ -132,6 +169,19 @@ export class GradesService {
         grade.grade = this.calculateLetter(grade.total);
 
         grade.is_finalized = true;
+
+        // // change enrollment status
+        // if (grade.total >= 50) {
+        //     await this.enrollmentRepository.update(grade.enrollment.id, { status: EnrollmentStatus.PASSED });
+        // } else {
+        //     await this.enrollmentRepository.update(grade.enrollment.id, { status: EnrollmentStatus.FAILED });
+        // }
+
+        await this.enrollmentsService.updateEnrollmentStatus(
+            grade.enrollment.id,
+            grade.total >= 50 ? EnrollmentStatus.PASSED : EnrollmentStatus.FAILED,
+            "c2e7e993-c246-4d04-a029-0996f368c891"
+        );
 
         return this.gradeRepository.save(grade);
     }

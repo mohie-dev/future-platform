@@ -11,13 +11,13 @@ export enum Status {
 }
 
 export enum EnrollmentStatus {
-    IN_PROGRESS = 'in_progress',  
-    PASSED = 'passed',            
-    FAILED = 'failed',            
-    FAILED_ABSENT = 'failed_absent', 
-    WITHDRAWN = 'withdrawn',      
-    INCOMPLETE = 'incomplete',    
-    DROPPED = 'dropped',          
+    IN_PROGRESS = 'in_progress',
+    PASSED = 'passed',
+    FAILED = 'failed',
+    FAILED_ABSENT = 'failed_absent',
+    WITHDRAWN = 'withdrawn',
+    INCOMPLETE = 'incomplete',
+    DROPPED = 'dropped',
 }
 
 export enum Gender {

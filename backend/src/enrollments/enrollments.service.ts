@@ -32,19 +32,37 @@ export class EnrollmentService {
 
         const student = await this.studentService.getStudentById(studentId);
         const course = await this.courseService.getCourse(courseId);
-
         const completedCourses = await this.studentService.getStudentCompletedCourses(studentId);
 
         // check if student has met the minimum credit hours requirement
-        if (course.data.course.min_gpa <= student.gpa) {
+        if (course.data.course.min_gpa >= student.gpa) {
             throw new BadRequestException(`Student has not met the minimum gpa requirement. Required: ${course.data.course.min_gpa}, Found: ${student.gpa}`);
         }
 
         // check if student has met the prerequisite requirement
-        if (course.data.course.prerequisites.length > 0) {
-            for (const prerequisite of course.data.course.prerequisites) {
-                if (!completedCourses.includes(prerequisite.prerequisite)) {
-                    throw new BadRequestException('Student has not met the prerequisite requirement');
+
+        // 1 => make an array of completed courses ids
+        const completedCourseIds = completedCourses.map(course => course.id);
+        
+        // 2 => get the prerequisites of the course
+        const prerequisites = course.data.course.prerequisites;
+        
+        // 3 => check if the student has met the prerequisite requirement
+        if (prerequisites && prerequisites.length > 0) {
+            for (const pre of prerequisites) {
+
+                // get the required course id
+                const requiredCourseId = pre.prerequisite.id || (pre.prerequisite && pre.prerequisite.id);
+                if (!requiredCourseId) {
+                    console.error("Could not find ID for prerequisite:", pre);
+                    continue;
+                }
+
+                if (!completedCourseIds.includes(requiredCourseId)) {
+                    const missingCourseName = pre.prerequisite?.course_name || 'Required Course';
+                    throw new BadRequestException(
+                        `Student has not met the prerequisite requirement: ${missingCourseName}`
+                    );
                 }
             }
         }
@@ -68,7 +86,7 @@ export class EnrollmentService {
             throw new BadRequestException('Student has not met the minimum gpa requirement');
         }
 
-        const savedEnrollment = await this.enrollmentRepository.create({
+        const savedEnrollment = await this.enrollmentRepository.save({
             student: student,
             course: course.data.course,
             year: year,
