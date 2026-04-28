@@ -2,6 +2,7 @@ export enum Role {
     ADMIN = 'admin',
     STUDENT = 'student',
     INSTRUCTOR = 'instructor',
+    CONTROLL_MEMBER = 'control_member'
 }
 
 export enum Status {
