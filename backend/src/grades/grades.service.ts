@@ -146,7 +146,11 @@ export class GradesService {
 
         if (totalCreditHours === 0) return 0;
 
-        return parseFloat((totalQualityPoints / totalCreditHours).toFixed(2));
+        const cgpa = parseFloat((totalQualityPoints / totalCreditHours).toFixed(2));
+
+        await this.studentService.updateStudent(studentId, { cgpa });
+
+        return cgpa;
     }
 
 
@@ -169,13 +173,6 @@ export class GradesService {
         grade.grade = this.calculateLetter(grade.total);
 
         grade.is_finalized = true;
-
-        // // change enrollment status
-        // if (grade.total >= 50) {
-        //     await this.enrollmentRepository.update(grade.enrollment.id, { status: EnrollmentStatus.PASSED });
-        // } else {
-        //     await this.enrollmentRepository.update(grade.enrollment.id, { status: EnrollmentStatus.FAILED });
-        // }
 
         await this.enrollmentsService.updateEnrollmentStatus(
             grade.enrollment.id,

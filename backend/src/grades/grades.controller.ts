@@ -42,4 +42,12 @@ export class GradesController {
     ) {
         return this.gradesService.calculateGPA('2fbcedf8-458f-4d47-9037-e8fcde0784be', 2026, 1);
     }
+
+    @Get('cgpa')
+    @HttpCode(200)
+    public async getCGPA(
+        // @Param('studentId') studentId: string,
+    ) {
+        return this.gradesService.calculateCGPA('2fbcedf8-458f-4d47-9037-e8fcde0784be');
+    }
 }
