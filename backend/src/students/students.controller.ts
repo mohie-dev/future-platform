@@ -37,14 +37,22 @@ export class StudentsController {
   }
 
   // GET: ~/api/students/:id
-  @Get(':id')
-  async getStudentById(@Param('id') id: string) {
-    return this.studentsService.getStudentById(id);
-  }
+  // @Get(':id')
+  // async getStudentById(@Param('id') id: string) {
+  //   return this.studentsService.getStudentById(id);
+  // }
 
   // GET: ~/api/students/code/:student_code
   @Get('code/:student_code')
   async getStudentByCode(@Param('student_code') student_code: string) {
     return this.studentsService.getStudentByCode(student_code);
+  }
+
+  // GET: ~/api/students/dashboard
+  @Get('dashboard')
+  @UseGuards(AuthRolesGuard)
+  @Roles(Role.STUDENT)
+  async studentDashboard(@CurrentUser() payload: type.JWTPayloadType) {
+    return this.studentsService.studentDashboard(payload.sub);
   }
 }

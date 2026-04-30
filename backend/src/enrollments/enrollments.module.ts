@@ -20,6 +20,6 @@ import { GradesModule } from "src/grades/grades.module";
     ],
     controllers: [EnrollmentController],
     providers: [EnrollmentService],
-    exports: [EnrollmentService],
+    exports: [EnrollmentService, TypeOrmModule],
 })
 export class EnrollmentsModule { }

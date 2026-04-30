@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './entities/student.entity';
 import { Repository, DataSource } from 'typeorm';
@@ -7,6 +7,7 @@ import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entities/user.entity';
 import { Department, EnrollmentStatus, Gender, Level, Role } from 'utils/enum';
 import { UpdateStudentDto } from './dtos/update-student.dto';
+import { Enrollment } from 'src/enrollments/entities/enrollment.entity';
 
 @Injectable()
 export class StudentsService {
@@ -14,8 +15,8 @@ export class StudentsService {
     private readonly dataSource: DataSource,
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @InjectRepository(Enrollment)
+    private readonly enrollmentRepository: Repository<Enrollment>,
     private readonly usersService: UsersService,
   ) { }
 
@@ -26,15 +27,8 @@ export class StudentsService {
    */
   public async createStudent(dto: CreateStudentDto, admin_id: string) {
     await this.usersService.checkValidation(admin_id, Role.ADMIN);
-
     const { user, ...studentData } = dto;
-
-    const existingUser = await this.userRepository.findOne({
-      where: { national_id: user.national_id },
-    });
-    if (existingUser) {
-      throw new BadRequestException('National ID already in use');
-    }
+    await this.usersService.findByNationalId(user.national_id);
 
     const existingStudent = await this.studentRepository.findOne({
       where: { student_code: studentData.student_code },
@@ -145,6 +139,33 @@ export class StudentsService {
     return student;
   }
 
+  public async studentDashboard(student_id: string) {
+    const student = await this.getStudentById(student_id);
+    const progressCourses = student.enrollments.
+      filter((enrollment) => enrollment.status === EnrollmentStatus.IN_PROGRESS)
+      .map((enrollment) => enrollment.course);
+    const completedCourses = student.enrollments.
+      filter((enrollment) => enrollment.status === EnrollmentStatus.PASSED)
+      .map((enrollment) => enrollment.course);
+    return {
+      message: 'Student dashboard fetched successfully',
+      data: {
+        student:{
+          name:student.user.full_name,
+          code:student.student_code,
+          level:student.level,
+          semester:student.semester,
+          department:student.department,
+        },
+        coursesStats: {
+          totalCourses: student.enrollments.length,
+          progressCourses,
+          completedCourses,
+        },
+      },
+    };
+  }
+
 
   /**
    * Get student completed courses
@@ -165,9 +186,14 @@ export class StudentsService {
    */
   public async getStudentCourses(student_id: string, course_status?: EnrollmentStatus) {
     const student = await this.getStudentById(student_id);
-    const enrollments = student.enrollments
-      .filter((enrollment) => course_status && enrollment.status === course_status)
-      .map((enrollment) => enrollment.course);
+
+    const enrollments = await this.enrollmentRepository.find({
+      where: {
+        student: student,
+        status: course_status,
+      },
+      relations: ['course'],
+    });
 
     return {
       message: 'Student courses fetched successfully',
@@ -177,6 +203,12 @@ export class StudentsService {
     };
   }
 
+  /**
+   * Update student
+   * @param id
+   * @param dto
+   * @returns
+   */
   public async updateStudent(id: string, dto: UpdateStudentDto) {
     const student = await this.getStudentById(id);
     if (!student) {
