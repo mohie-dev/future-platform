@@ -9,7 +9,7 @@ async function bootstrap() {
     origin: [
       'https://future-platform-indol.vercel.app',
       'https://future-platform-pro.vercel.app',
-      'http://localhost:5173'
+      'http://localhost:5173',
     ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
@@ -23,7 +23,7 @@ async function bootstrap() {
   );
   const swagger = new DocumentBuilder()
     .setTitle('Future Platform')
-    .setDescription("Future Platform APIs documentation")
+    .setDescription(`Future Platform APIs documentation`)
     .addBearerAuth()
     .setVersion('1.0')
     .addTag('App', 'General endpoints')
@@ -34,10 +34,10 @@ async function bootstrap() {
     .addTag('Enrollments', 'Course enrollment management')
     .addTag('Grades', 'Grade management')
     .addTag('Assign Course', 'Assigning courses to instructors')
-    .build()
-  const document = SwaggerModule.createDocument(app, swagger)
+    .build();
+  const document = SwaggerModule.createDocument(app, swagger);
 
-  SwaggerModule.setup('api-docs', app, document)
+  SwaggerModule.setup('api-docs', app, document);
   const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0');
   console.log(`Server is listening on port: ${port}`);
