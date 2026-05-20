@@ -47,4 +47,9 @@ export class UpdateUserDto {
     @MinLength(14)
     @MaxLength(14)
     national_id?: string;
+
+    @ApiPropertyOptional({ example: '2000-01-01', description: 'Date of birth (YYYY-MM-DD)' })
+    @IsOptional()
+    @IsString()
+    date_of_birth?: string;
 }
