@@ -77,5 +77,5 @@ $ npm run test:e2e
 ## Deployment
 
 The project includes configurations for multiple cloud providers:
-- `railway.toml`: For [Railway](https://railway.app/)
-- `Dockerfile`: Standardized containerization for any Docker-compatible environment.
+- API for integration with frontend [Render](https://future-platform-i8rf.onrender.com)
+- DB Host On Render
