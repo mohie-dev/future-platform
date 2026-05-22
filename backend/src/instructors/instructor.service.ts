@@ -6,6 +6,7 @@ import { UsersService } from "../users/users.service";
 import { Role } from "../../utils/enum";
 import { CreateInstructorDto } from "./dtos/create-instructor.dto";
 import { User } from "../users/entities/user.entity";
+import { UpdateInstructorDto } from "./dtos/update-instructor.dto";
 
 @Injectable()
 export class InstructorService {
@@ -84,11 +85,46 @@ export class InstructorService {
     public async getInstructorById(id: string) {
         const instructor = await this.instructorRepository.findOne({
             where: { id },
+            relations: ['user'],
         });
         if (!instructor) {
             throw new NotFoundException('Instructor not found');
         }
         return instructor;
+    }
+
+    public async updateInstructor(id: string, dto: UpdateInstructorDto) {
+        const { user, ...instructorFields } = dto;
+        
+            await this.instructorRepository.manager.transaction(async (manager) => {
+              const instructorUpdates = Object.fromEntries(
+                Object.entries(instructorFields).filter(([_, v]) => v !== undefined)
+              );
+        
+              if (Object.keys(instructorUpdates).length > 0) {
+                await manager.update(Instructor, id, instructorUpdates);
+              }
+        
+              if (user) {
+                const instructor = await manager.findOne(Instructor, {
+                  where: { id },
+                  select: { user: { id: true } },
+                  relations: ['user'],
+                });
+        
+                if (!instructor) throw new NotFoundException(`Instructor ${id} not found`);
+        
+                const userUpdates = Object.fromEntries(
+                  Object.entries(user).filter(([_, v]) => v !== undefined)
+                );
+        
+                if (Object.keys(userUpdates).length > 0) {
+                  await manager.update(User, instructor.user.id, userUpdates);
+                }
+              }
+            });
+        
+            return this.getInstructorById(id);
     }
 
     public async getAllInstructors() {
