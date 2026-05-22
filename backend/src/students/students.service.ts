@@ -208,6 +208,14 @@ export class StudentsService {
    */
   public async studentDashboard(student_id: string) {
     const student = await this.getStudentById(student_id);
+
+    if (student.display_content === false) {
+      return {
+        message: 'Student dashboard is not available',
+        data: null,
+      };
+    }
+
     const progressCourses = student.enrollments.
       filter((enrollment) => enrollment.status === EnrollmentStatus.IN_PROGRESS)
       .map((enrollment) => enrollment.course);
@@ -341,6 +349,26 @@ export class StudentsService {
   // Get Number of Students
   public async getNumberOfStudents() {
     return this.studentRepository.count();
+  }
+
+  public async toggleContentAccess(id: string) {
+    const student = await this.studentRepository.findOne({
+      where: { id },
+    });
+
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+
+    student.display_content = !student.display_content;
+
+    await this.studentRepository.save(student);
+
+    return {
+      message: `Content access ${student.display_content ? 'enabled' : 'disabled'
+        } successfully`,
+      has_content_access: student.display_content,
+    };
   }
 
   // Get Academic Estimation

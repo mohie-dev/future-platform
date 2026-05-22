@@ -42,6 +42,9 @@ export class Student {
   @Column({ default: 0 })
   completed_credit_hours: number;
 
+  @Column({ default: false })
+  display_content: boolean;
+
   @Column({ type: 'float', default: 0 })
   gpa: number;
 

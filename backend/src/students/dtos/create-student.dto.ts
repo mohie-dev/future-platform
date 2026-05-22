@@ -1,5 +1,5 @@
 import {
-  IsDate,
+  IsBoolean,
   IsDateString,
   IsEnum,
   IsNotEmpty,
@@ -45,6 +45,11 @@ export class CreateStudentDto {
   @IsNumber()
   @IsNotEmpty()
   completed_credit_hours: number;
+
+  @ApiProperty({ example: false, description: 'Indicates if the student has content access' })
+  @IsBoolean()
+  @IsNotEmpty()
+  display_content: boolean;
 
   @ApiProperty({ example: 3.5, description: 'Current GPA' })
   @IsNumber()

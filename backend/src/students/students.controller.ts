@@ -108,4 +108,14 @@ export class StudentsController {
   ) {
     return this.studentsService.deleteStudent(id);
   }
+
+  // PUT ~/api/students/:id/toggle-content
+  @Put(':id/toggle-content')
+  @UseGuards(AuthRolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Toggle student content access (Admin only) for display content for the student' })
+  async toggleContentAccess(@Param('id') id: string) {
+    return this.studentsService.toggleContentAccess(id);
+  }
 }
